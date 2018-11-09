@@ -1,3 +1,21 @@
 \section{Erstes Programm}
 \subsection{Blinkllicht}
 \subsection{RGB LED}
+\subsubsection{}
+Um die Hexadecimalzahl zu einer Binärzahl umzuwandeln wird diese durch 2 geteilt und der Rest notiert bis Null durch Zwei geteilt wird. Der Rest der ersten Division entspricht dem least significant bit (LSB) und der Rest der letzten Division entspricht dem most significant bit (MSB). Dieser Vorgang wird in \autoref{eq:bin} verdeutlicht.
+ 
+\begin{equation}
+\label{eq:bin}
+\frac{4}{2}=2,\, \text{R}=0;\\
+\frac{2}{2}=1,\, \text{R}=0;\\
+\frac{1}{2}=0,\, \text{R}=1 \\\rightarrow
+0\text x 04=0\text b100
+\end{equation}
+
+Port F hat eine Basis-Adresse von $0\text x 4002.5000$ und das Direction Register hat eine Offset Adresse von $0\text x 400$.  Das setzen eines bits in dem Direction Register konfiguriert den jeweiligen Pin als einen Output. Die Addition der Basis- und Offset-Adressen führt zu einer Adresse bei der nun die Pins für Port F konfiguriert werden können. Durch das beschreiben dieses Registers mit $0\text x 04 $, wird Pin PF2, die blaue LED, als Output konfiguriert.
+
+\subsubsection{}
+Sodass die grüne LED blinkt, muss Port PF3 als Output konfiguriert werden. Wie zuvor müssen die Offset- und Basis-Adresse addiert werden und darauf hin Pin PF3 als output definiert werden. PF3 entspricht bit Nummer 3 und kann mit dem Wert $0\text b 00001000$ beschrieben werden um dies zu bewirken. Der equivalente Hexadezimalwert wäre $0\text x 08$.
+
+\subsubsection{}
+Zurzeit wird nur die LED an PF2 zum blinken gebracht, indem der Inhalt von Register GPIO DATA auf $0\text x 04$ gesetzt wird. Um die LED an PF3 zum blinken zu bringen muss, wie in der letzten Aufgabe gezeigt, der Inhalt des GPIO DATA Registers auf $0\text x 08$ gesetzt werden. Sodass beide gleichzeitig an gehen, müssen die oben genannten Inhalte addiert werden. Dies würde einem Wert von $0\text x 0\text C$ oder $0\text b 00001100$ entsprechen. Der Hexadezimalcode ist hier kürzer, aber bei dem Binären Code kann man sofort sehen welche bits gesetzt sind und man kann diese sofort ändern ohne Berechnungen durchführen zu müssen, wenn man ein zusätzliches bit setzen bzw. löschen will.
