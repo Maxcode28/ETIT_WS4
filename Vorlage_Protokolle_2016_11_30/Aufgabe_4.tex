@@ -1,5 +1,168 @@
 \section{Verwenden des TivaWare-Framework}
 \subsection{GPIO-Blinklicht}
-Siehe Protokoll.
+\begin{lstlisting}
+#include <stdint.h>
+ #include <stdbool.h> // definition of type "bool"
+ #include"inc/hw_memmap.h" // definition of memory adresses
+ #include"inc/hw_types.h" // definition of framework makros
+ #include"driverlib/gpio.h"
+ #include"driverlib/sysctl.h"
+ 
+// Delay-Funktion
+
+void delay(void)
+{
+  uint32_t i=80000;
+  while(i) {i--;}
+ }
+
+
+int main(void){
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);        //Port F aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);   //Pin 1 bis 3 initialisieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+
+   while(1)      //unendliche Schleife fuer flimmern der LED in weiss
+   {
+       delay();
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0xFF);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0xFF);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0xFF);
+        delay();
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0x00);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x00);
+
+
+   }
+    return 0;
+}
+\end{lstlisting}
+
+
+
+
 \subsection{Externe LED Schaltung}
-Siehe Protokoll.
+\subsubsection{}
+\begin{lstlisting}
+/**
+ * main.c
+ */
+ #include <stdint.h>
+ #include <stdbool.h>                                           // definition of type "bool"
+ #include"inc/hw_memmap.h"                                      // definition of memory adresses
+#include"inc/hw_types.h"                                        // definition of framework makros
+ #include"driverlib/gpio.h"
+ #include"driverlib/sysctl.h"
+
+void delay(void)
+{
+  uint32_t i=100000;
+  while(i) {i--;}
+ }
+
+
+int main(void){
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+   while(1)
+   {
+       delay();
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0xFF);            // GPIO Pins auf High stellen
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0xFF);
+        delay();
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0x00);            // GPIO Pins auf Low stellen
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0x00);
+
+   }
+    return 0;
+}
+\end{lstlisting}
+
+\subsubsection{}
+
+\begin{lstlisting}
+
+/**
+ * main.c
+ */
+ #include <stdint.h>
+ #include <stdbool.h>                                           // definition of type "bool"
+ #include"inc/hw_memmap.h"                                      // definition of memory adresses
+#include"inc/hw_types.h"                                        // definition of framework makros
+ #include"driverlib/gpio.h"
+ #include"driverlib/sysctl.h"
+
+void delay(void)                                                // Blinklicht Delay
+{
+  uint32_t i=1000;                                              
+  while(i) {i--;}
+ }
+
+void delayPWM(void)                                             // PWM Delay (Hoher Wert -> Helle LED)
+{
+  uint32_t i=8000;                                            
+  while(i) {i--;}
+ }
+
+
+int main(void){
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+   while(1)
+   {
+       delay();
+       
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0xFF);            // GPIO Pins 0-7 auf High stellen
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0xFF);
+    
+        delayPWM();
+        
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0x00);            // GPIO Pins 0-7 auf Low stellen
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0x00);
+
+   }
+    return 0;
+}
+\end{lstlisting}

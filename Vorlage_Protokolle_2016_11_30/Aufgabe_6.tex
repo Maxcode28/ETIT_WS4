@@ -1,10 +1,212 @@
 \section{Digitale Eingänge}
 \subsection{Taster}
 \subsubsection{}
-Siehe Protokoll.
+\begin{lstlisting}
+/**
+ * main.c
+ */
+ #include <stdint.h>
+ #include <stdbool.h>                                           // definition of type "bool"
+ #include"inc/hw_memmap.h"                                      // definition of memory adresses
+ #include"inc/hw_types.h"                                        // definition of framework makros
+ #include"driverlib/gpio.h"
+ #include"driverlib/sysctl.h"
+
+void delay(void)                                                // Blinklicht Delay
+{
+  uint32_t i=500000;
+  while(i) {i--;}
+ }
+
+void delayPWM(void)                                             // PWM Delay (Hoher Wert -> Helle LED)
+{
+  uint32_t i=10000;
+  while(i) {i--;}
+ }
+
+
+int main(void){
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+    GPIOPinTypeGPIOInput(GPIO_PORTC_BASE,GPIO_PIN_7);           // Schalter input config
+    GPIOPadConfigSet(GPIO_PORTC_BASE,GPIO_PIN_7,GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+
+   while(1)
+   {
+       delay();
+       if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_PIN_7)==0) {
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0xFF);            // GPIO Pins 0-7 auf High stellen
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, 0xFF);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0xFF);
+       }
+       else
+       {
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0x00);            // GPIO Pins 0-7 auf Low stellen
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, 0x00);
+    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, 0x00);
+       }
+   }
+    return 0;
+}
+\end{lstlisting}
+
+
+
 \subsubsection{}
-Siehe Protokoll.
+
+\begin{lstlisting}
+
+/**
+ * main.c
+ */
+ #include <stdint.h>
+ #include <stdbool.h>                                           // definition of type "bool"
+ #include"inc/hw_memmap.h"                                      // definition of memory adresses
+ #include"inc/hw_types.h"                                        // definition of framework makros
+ #include"driverlib/gpio.h"
+ #include"driverlib/sysctl.h"
+
+void delay(void)
+{
+  uint32_t i=200000;
+  while(i) {i--;}
+ }
+
+int main(void){
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);                // Port F Aktivieren
+    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE,GPIO_PIN_4);           // PF4 als Input definieren
+    GPIOPadConfigSet(GPIO_PORTF_BASE,GPIO_PIN_4,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPU);
+    // Bei der der Unteraufagbe 6.1.2 muesste der der Port B und Pin 7 gewaehlt werden
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+    bool state = 0;
+
+   while(1)
+   {
+       delay();
+
+       if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_PIN_4)==0)               // Wenn Schalter geschlossen
+       {
+          state = !state;                                           // State wird gewechselt
+       }
+
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_PIN_0*state); // GPIO Output wird auf jeweiligen State geschaltet
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, GPIO_PIN_1*state);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2*state);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3*state);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, GPIO_PIN_4*state);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5*state);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, GPIO_PIN_6*state);
+       GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7*state);
+   }
+    return 0;
+}
+\end{lstlisting}
+
+
 \subsubsection{}
-Siehe Protokoll.
+Der Code ist der selbe wie bei Aufgabenteil 6.1.2 nur, dass der Port B und Pin 7 gewählt werden müssten, statt Pin 4 vom Port F.
+ 
+ 
 \subsection{Externer Interrupt}
-Siehe Protokoll.
+\begin{lstlisting}
+#include <stdint.h>
+#include <stdbool.h>
+#include "inc/hw_ints.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
+// Addresse zum ansteuern der jeweiligen LED
+volatile uint32_t LED = 1;
+
+//Delay-Funktion fuer Blinken
+void delay(void)
+{
+  uint32_t i=80000;
+  while(i) {i--;}
+}
+
+// Interruptroutine
+
+void ex_int_handler(void) {
+
+//Schalte vorherige LED aus
+
+GPIOPinWrite(GPIO_PORTB_BASE, LED, 0x00);
+
+// Interrupt-Flag loeschen
+
+GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4);
+
+GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE,GPIO_PIN_4);
+
+LED = LED<<1;
+// Von 8. LED zurueck auf 1. springen
+if ( LED >= 1<<8)
+{
+LED = 1;
+}
+}
+
+void main (void){
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);                // Port F Aktivieren
+    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE,GPIO_PIN_4);           // PF4 als Input definieren
+    GPIOPadConfigSet(GPIO_PORTF_BASE,GPIO_PIN_4,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPU);
+
+    // Pin mit Interrupt
+    GPIOIntDisable(GPIO_PORTF_BASE,GPIO_PIN_4);
+    GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4);
+    GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_FALLING_EDGE);
+    GPIOIntRegister(GPIO_PORTF_BASE, ex_int_handler);
+    GPIOIntEnable(GPIO_PORTF_BASE,GPIO_PIN_4);
+
+while(1) {
+    delay();
+    GPIOPinWrite(GPIO_PORTB_BASE, LED, 0xFF);
+    delay();
+    GPIOPinWrite(GPIO_PORTB_BASE, LED, 0x00);
+	}
+}
+
+\end{lstlisting}
