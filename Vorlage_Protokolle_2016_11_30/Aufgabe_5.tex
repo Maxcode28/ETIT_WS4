@@ -8,8 +8,95 @@ Der Mikrokontroller besitzt einen 16 MHz Quarz, welcher mit Hilfe der PLL 400 MH
 \end{equation}
 
 \subsection{}
-Siehe Protokoll.
+\begin{lstlisting}
+#include <stdint.h>
+#include <stdbool.h>
+#include "inc/hw_ints.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/timer.h"
+#include "driverlib/interrupt.h"
 
+
+// stores ms since startup
+volatile uint32_t systemTime_ms = 0;
+
+
+void InterruptHandlerTimer0A (void)
+{
+    // Clear the timer interrupt to prevent the interrupt function from immediately being called again on exit
+    TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    // count up one ms
+    systemTime_ms++;
+}
+
+void clockSetup(void)
+{
+    uint32_t timerPeriod;
+    //Configure clock
+    SysCtlClockSet(SYSCTL_SYSDIV_5|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
+    //enable peripheral for timer
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+    //configure timer as 32 bit timer in periodic mode
+    TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
+    //set timerPeriod to number of periods needed to generate a timeout with a frequency of 1kHz (every 1ms)
+    timerPeriod = (SysCtlClockGet()/1000);
+    //set TIMER-0-A to generate a timeout after timerPeriod-1 cycles
+    TimerLoadSet(TIMER0_BASE, TIMER_A, timerPeriod-1);
+    //Register the function InterruptHandlerTimer0A to be called when an interrupt from TIMER-0-A occurs
+    TimerIntRegister(TIMER0_BASE, TIMER_A, &(InterruptHandlerTimer0A));
+    //Enable the interrupt for TIMER-0-A
+    IntEnable(INT_TIMER0A);
+    //generate an interrupt, when TIMER-0-A sends a timeout
+    TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    //master interrupt enable for all interrupts
+    IntMasterEnable();
+    //Enable the timer to start counting
+    TimerEnable(TIMER0_BASE, TIMER_A);
+}
+
+void delay_ms(uint32_t waitTime)
+{
+    uint32_t t = systemTime_ms;
+    while (systemTime_ms - t < waitTime);
+
+}
+
+int main(void)
+{
+clockSetup();
+        SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);               // GPIO Port B aktivieren
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_1);
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_2);
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_3);
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_4);
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_5);
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_6);
+            GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+
+            bool state = 0;
+            //Verbeseserte Variante des Codes der GPIO-Steuerung aus Aufgabe 4
+                while (1)
+                {
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_PIN_0*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, GPIO_PIN_1*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, GPIO_PIN_4*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, GPIO_PIN_6*state);
+                    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7*state);
+
+                    state = !state;
+                    delay_ms(500/2);
+                }
+            }
+
+
+\end{lstlisting}
 \subsection{}
 \begin{table}[htb]
     \centering
