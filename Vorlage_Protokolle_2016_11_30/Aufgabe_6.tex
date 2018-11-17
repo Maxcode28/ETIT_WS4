@@ -36,7 +36,7 @@ int main(void){
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
 
     GPIOPinTypeGPIOInput(GPIO_PORTC_BASE,GPIO_PIN_7);           // Schalter input config
-    GPIOPadConfigSet(GPIO_PORTC_BASE,GPIO_PIN_7,GPIO_STRENGTH_2MA,← GPIO_PIN_TYPE_STD_WPU);
+    GPIOPadConfigSet(GPIO_PORTC_BASE,GPIO_PIN_7,GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 
    while(1)
    {
@@ -90,7 +90,7 @@ int main(void){
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);                // Port F Aktivieren
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE,GPIO_PIN_4);           // PF4 als Input definieren
     GPIOPadConfigSet(GPIO_PORTF_BASE,GPIO_PIN_4,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPU);
-    // Bei der der Unteraufagbe 6.1.1 & 6.1.2 müsste der der B und Pin 7 gewählt werden
+    // Bei der der Unteraufagbe 6.1.1 & 6.1.2 müsste der der Port B und Pin 7 gewählt werden
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
