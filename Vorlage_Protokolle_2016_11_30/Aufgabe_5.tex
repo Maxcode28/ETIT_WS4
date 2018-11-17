@@ -1,1 +1,28 @@
 \section{Warteschleifen und Taktfrequenz}
+\subsection{}
+Der Mikrokontroller besitzt einen 16 MHz Quarz, welcher mit Hilfe der PLL 400 MHz erreicht. Durch den Divisor Div\_ 5 wird die gegebene Frequenz noch durch 5 dividiert wird. Somit ergibt sich mit der internen Halbierung eine Frequenz von 40 MHz. Die Berechnung ist in \autoref{eq:5.1} gezeigt.
+ 
+\begin{equation}
+\label{eq:5.1}
+\frac{400\,\text{MHz}}{2\times 5}=40\,\text{MHz}
+\end{equation}
+
+\subsection{}
+Siehe Protokoll.
+
+\subsection{}
+\begin{table}[htb]
+    \centering
+    \caption{Flimmerverschmelzungsfrequenz}
+    \label{tab:Flimmerverschmelzungsfrequenz}
+    \begin{tabular}{cc}
+        \toprule
+        Name & Frequenz [\si{\hertz}] \\
+        \midrule
+        David & \num{50}  \\
+        Jan & \num{47.6} \\
+        Max & \num{45} \\
+        \bottomrule
+    \end{tabular}
+    
+\end{table}
