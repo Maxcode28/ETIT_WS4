@@ -24,7 +24,6 @@ void delayPWM(void)                                             // PWM Delay (Ho
   while(i) {i--;}
  }
 
-
 int main(void){
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
@@ -68,12 +67,9 @@ int main(void){
 }
 \end{lstlisting}
 
-
-
 \subsubsection{}
 
 \begin{lstlisting}
-
 /**
  * main.c
  */
@@ -91,11 +87,10 @@ void delay(void)
  }
 
 int main(void){
-
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);                // Port F Aktivieren
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE,GPIO_PIN_4);           // PF4 als Input definieren
     GPIOPadConfigSet(GPIO_PORTF_BASE,GPIO_PIN_4,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPU);
-    // Bei der der Unteraufagbe 6.1.2 muesste der der Port B und Pin 7 gewaehlt werden
+    // Bei der der Unteraufagbe 6.1.2 muesste der der Port C und Pin 7 gewaehlt werden
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);                // GPIO Port B aktivieren
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
@@ -131,10 +126,8 @@ int main(void){
 }
 \end{lstlisting}
 
-
 \subsubsection{}
-Der Code ist der selbe wie bei Aufgabenteil 6.1.2 nur, dass der Port B und Pin 7 gewählt werden müssten, statt Pin 4 vom Port F.
- 
+Der Code ist der selbe wie bei Aufgabenteil 6.1.2 nur, dass der Port C und Pin 7 gewählt werden müssten, statt Pin 4 vom Port F. 
  
 \subsection{Externer Interrupt}
 \begin{lstlisting}
@@ -208,5 +201,4 @@ while(1) {
     GPIOPinWrite(GPIO_PORTB_BASE, LED, 0x00);
 	}
 }
-
 \end{lstlisting}

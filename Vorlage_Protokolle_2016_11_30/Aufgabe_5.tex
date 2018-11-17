@@ -19,10 +19,8 @@ Der Mikrokontroller besitzt einen 16 MHz Quarz, welcher mit Hilfe der PLL 400 MH
 #include "driverlib/timer.h"
 #include "driverlib/interrupt.h"
 
-
 // stores ms since startup
 volatile uint32_t systemTime_ms = 0;
-
 
 void InterruptHandlerTimer0A (void)
 {
@@ -61,7 +59,6 @@ void delay_ms(uint32_t waitTime)
 {
     uint32_t t = systemTime_ms;
     while (systemTime_ms - t < waitTime);
-
 }
 
 int main(void)
@@ -94,8 +91,6 @@ clockSetup();
                     delay_ms(500/2);
                 }
             }
-
-
 \end{lstlisting}
 \subsection{}
 \begin{table}[htb]
