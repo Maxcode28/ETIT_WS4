@@ -2,7 +2,6 @@
 \subsection{Lautstärkepegel}
 
 \begin{lstlisting}
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
@@ -127,8 +126,6 @@ void ADC_int_handler(void)
         GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b11111111);
         }
     }
-
-
 \end{lstlisting}
 
 
