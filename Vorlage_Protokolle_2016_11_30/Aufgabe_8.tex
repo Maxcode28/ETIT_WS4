@@ -1,3 +1,81 @@
 \section{Lautstärkepegel}
 \subsection{Lautstärkepegel}
+
+\begin{lstlisting}
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/adc.h"
+#include "driverlib/gpio.h"
+#include "driverlib/timer.h"
+
+// Makros
+#define FSAMPLE  44000
+#define BUFFER_SIZE 1000
+
+// globale Variable
+int32_t buffer_sample[BUFFER_SIZE];                             //Quadratische Signale
+uint32_t i_sample = 0;
+int32_t buffer_sample_sum = 0;                                  // momentaner Pegel
+
+// Prototypen
+void ADC_int_handler(void);
+
+
+int square(uint32_t x)                                          // Quadrierfunktion
+{
+   return x*x;
+}
+
+
+int main(void)
+{
+    // SystemClock konfigurieren
+    SysCtlClockSet(SYSCTL_SYSDIV_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
+    uint32_t ui32Period = SysCtlClockGet()/FSAMPLE;
+
+    // Peripherie aktivieren
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+
+    // GPIO konfigurieren
+    GPIOPinTypeADC(GPIO_PORTE_BASE,GPIO_PIN_2);
+    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE,GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7);
+
+    //Timer0 konfigurieren
+    TimerConfigure(TIMER0_BASE,TIMER_CFG_PERIODIC);
+    TimerLoadSet(TIMER0_BASE, TIMER_A, ui32Period - 1);
+    TimerControlTrigger(TIMER0_BASE,TIMER_A,true);
+    TimerEnable(TIMER0_BASE,TIMER_A);
+
+    // ADC konfigurieren
+    ADCClockConfigSet(ADC0_BASE,ADC_CLOCK_RATE_FULL,1);
+
+    ADCSequenceConfigure(ADC0_BASE, 3, ADC_TRIGGER_TIMER, 0);
+    ADCSequenceStepConfigure(ADC0_BASE, 3, 0, ADC_CTL_CH1|ADC_CTL_IE|ADC_CTL_END);
+    ADCSequenceEnable(ADC0_BASE, 3);
+    ADCIntClear(ADC0_BASE,3);
+    ADCIntRegister(ADC0_BASE,3,ADC_int_handler);
+    ADCIntEnable(ADC0_BASE,3);
+
+    while(1)
+    {
+    }
+}
+
+// Interrupt handler
+void ADC_int_handler(void)
+{
+    ADCIntClear(ADC0_BASE, 3);	// delete interrupt flag
+	/* Fuegen Sie hier Ihren Code ein / insert your code here */
+}
+
+\end{lstlisting}
+
+
 \subsection{Eigene Verbesserungen}
