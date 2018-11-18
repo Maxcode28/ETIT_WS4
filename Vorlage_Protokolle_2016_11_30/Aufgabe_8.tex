@@ -17,19 +17,13 @@
 #define BUFFER_SIZE 1000
 
 // globale Variable
-int32_t buffer_sample[BUFFER_SIZE];                             //Quadratische Signale
+int32_t buffer_sample[BUFFER_SIZE];     //Quadratische Signale
 uint32_t i_sample = 0;
-int32_t buffer_sample_sum = 0;                                  // momentaner Pegel
-
+int32_t buffer_sample_sum = 0;          // momentaner Pegel
+uint32_t index = 0;
+uint32_t index_zuvor = 0;
 // Prototypen
 void ADC_int_handler(void);
-
-
-int square(uint32_t x)                                          // Quadrierfunktion
-{
-   return x*x;
-}
-
 
 int main(void)
 {
@@ -67,13 +61,73 @@ int main(void)
     {
     }
 }
-
+// Quadrierungsfunktion einer Variable x
+int square(uint32_t x)                                          // Quadrierfunktion
+{
+   return x * x;
+}
 // Interrupt handler
 void ADC_int_handler(void)
 {
-    ADCIntClear(ADC0_BASE, 3);	// delete interrupt flag
-	/* Fuegen Sie hier Ihren Code ein / insert your code here */
-}
+    ADCIntClear(ADC0_BASE, 3);  // delete interrupt flag
+    ADCProcessorTrigger(ADC0_BASE,3);                            // Konvertierung beginnen
+
+    while(!ADCIntStatus(ADC0_BASE,3,false))                      // warten bis Konvertierung abgeschlossen
+    {
+    }
+    uint32_t NewADCValue = 0;
+    ADCSequenceDataGet(ADC0_BASE,3,&NewADCValue);              // Wert einziehen
+    NewADCValue = square(NewADCValue);                         //Wert quadrieren
+
+    buffer_sample[index] = NewADCValue;                                 //speichert Werte im Vektor
+    buffer_sample_sum += NewADCValue - buffer_sample[index_zuvor] ;     //Summe der gemessenen Werte berechnen
+    index_zuvor= index;
+    index++ ;
+
+    if (index == BUFFER_SIZE )
+        {
+        index = 0;
+        }
+    //Grenzwerte bestimmt nach Test
+
+    if(buffer_sample_sum < 50000)
+            {
+            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00000000);
+            }
+    if(buffer_sample_sum > 50000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00000001);
+        }
+    if(buffer_sample_sum > 100000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00000011);
+        }
+    if(buffer_sample_sum > 150000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00000111);
+        }
+    if(buffer_sample_sum > 200000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00001111);
+        }
+    if(buffer_sample_sum > 250000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00011111);
+        }
+    if(buffer_sample_sum > 300000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00111111);
+        }
+    if(buffer_sample_sum > 350000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b01111111);
+        }
+    if(buffer_sample_sum > 400000)
+        {
+        GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b11111111);
+        }
+    }
+
 
 \end{lstlisting}
 
