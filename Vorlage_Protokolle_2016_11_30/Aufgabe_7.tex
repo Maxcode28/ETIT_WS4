@@ -50,7 +50,7 @@ SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
 //konfiguriert timer als 32 bit timer in periodisch mode
 TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
 //setze Zeitperiode auf Anzahl der Perioden, die zum Erzeugen eines
-//Timeouts mit einer Frequenz von 1 kHz (alle 1 ms) benötigt werden
+//Timeouts mit einer Frequenz von 1 kHz (alle 1 ms) benoetigt werden
 timerPeriod = (SysCtlClockGet()/1000);
 // setze TIMER-0-A ein, um nach timePeriod-1-Zyklen ein Timeout zu generieren
 TimerLoadSet(TIMER0_BASE, TIMER_A, timerPeriod-1);
@@ -63,16 +63,16 @@ IntEnable(INT_TIMER0A);
 TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 //master interrupt aktiviert fuer alle interrupts
 IntMasterEnable();
-//Aktiviert den Timer, um mit dem Zählen zu beginnen
+//Aktiviert den Timer, um mit dem Zaehlen zu beginnen
 TimerEnable(TIMER0_BASE, TIMER_A);
 
 }
 
 
-// Es erhaelt als Eingabeparameter die Verzoegerung in ms  und eine Verzögerung um genau diese Zeit bewirkt.
+// Es erhaelt als Eingabeparameter die Verzoegerung in ms  und eine Verzoegerung um genau diese Zeit bewirkt.
 
 void delay_ms(uint32_t waitTime) {
-//Variable systemTime_ms zaehlt eine millisekunde hoch und durch die while schleife vergleichen wir der Eingabe Parameter waitTime mit systemTime_ms
+//Variable systemTime_ms zaehlt eine Millisekunde hoch und durch die while schleife vergleichen wir der Eingabe Parameter waitTime mit systemTime_ms
 // Durch Eingabe der Zahl 500 zaehlt diese funktion bis zu 500 ms und wird jedoch um diese Zeit verzoegert.
     systemTime_ms=0;
     while( systemTime_ms < waitTime);
@@ -92,7 +92,7 @@ int main(void){
     GPIOPinTypeADC(GPIO_PORTE_BASE,GPIO_PIN_2);                 // PIN PE2 ADC Funktion zuweisen
 
     ADCSequenceConfigure(ADC0_BASE,1,ADC_TRIGGER_PROCESSOR,0);  // Prozessor als Trigger Quelle
-    ADCSequenceStepConfigure(ADC0_BASE,1,0,ADC_CTL_CH1|ADC_CTL_IE|ADC_CTL_END); // AI1 abtasten/Interrupt erzeugen bei Ende/letzter ← Schritt
+    ADCSequenceStepConfigure(ADC0_BASE,1,0,ADC_CTL_CH1|ADC_CTL_IE|ADC_CTL_END); // AI1 abtasten/Interrupt erzeugen bei Ende/letzter Schritt
     ADCSequenceEnable(ADC0_BASE,1);                             // ADC Sequenz 1 aktivieren
 
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);         // GPIO Port B Pin 0-7 aktivieren
@@ -109,13 +109,13 @@ int main(void){
     uint32_t ui32ADC0Value;
 
     int R0 = 372;                   //ADC Schwellenwerte
-    int R1 = 1016;
-    int R2 = 1658;
-    int R3 = 2028;
-    int R4 = 3377;
-    int R5 = 3570;
-    int R6 = 3723;
-    int R7 = 3839;
+    int R1 = 534;
+    int R2 = 739;
+    int R3 = 1658;
+    int R4 = 2048;
+    int R5 = 2816;
+    int R6 = 3724;
+    int R7 = 3840;
 
 
 
@@ -130,71 +130,70 @@ int main(void){
            }
        ADCSequenceDataGet(ADC0_BASE,1,&ui32ADC0Value);
 
-       if(ui32ADC0Value < R0)
+       if((R1>ui32ADC0Value)&&(ui32ADC0Value>=R0))
        {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_PIN_0*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, GPIO_PIN_0*0x00);
            delay();
-
        }
-       else if((R1>ui32ADC0Value)&&(ui32ADC0Value>=R0))
-       {
+
+       else if((R2>ui32ADC0Value)&&(ui32ADC0Value>=R1))
+           {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, GPIO_PIN_1*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_1, GPIO_PIN_1*0x00);
            delay();
-       }
+           }
 
-       else if((R2>ui32ADC0Value)&&(ui32ADC0Value>=R1))
+       else if((R3>ui32ADC0Value)&&(ui32ADC0Value>=R2))
            {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_PIN_2*0x00);
            delay();
            }
-
-       else if((R3>ui32ADC0Value)&&(ui32ADC0Value>=R2))
+       else if((R4>ui32ADC0Value)&&(ui32ADC0Value>=R3))
            {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3*0x00);
            delay();
            }
-       else if((R4>ui32ADC0Value)&&(ui32ADC0Value>=R3))
+       else if((R5>ui32ADC0Value)&&(ui32ADC0Value>=R4))
            {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, GPIO_PIN_4*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_4, GPIO_PIN_4*0x00);
            delay();
            }
-       else if((R5>ui32ADC0Value)&&(ui32ADC0Value>=R4))
+       else if((R6>ui32ADC0Value)&&(ui32ADC0Value>=R5))
            {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_5, GPIO_PIN_5*0x00);
            delay();
            }
-       else if((R6>ui32ADC0Value)&&(ui32ADC0Value>=R5))
-           {
+
+       else if((R7>ui32ADC0Value)&&(ui32ADC0Value>=R6))
+          {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, GPIO_PIN_6*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_6, GPIO_PIN_6*0x00);
            delay();
-           }
-
-       else if((R7>ui32ADC0Value)&&(ui32ADC0Value>=R6))
-          {
+          }
+       else if(ui32ADC0Value>R7)
+       {
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7*0xFF);
            delay();
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7*0x00);
            delay();
-          }
+       }
 
    }
 
 
-   }
+}
 
 
 
