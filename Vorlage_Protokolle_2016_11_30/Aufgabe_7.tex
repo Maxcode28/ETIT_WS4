@@ -2,12 +2,72 @@
 \subsection{A/D-Umsetzer}
 \subsubsection{}
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{Spannungsteiler.png}
+\caption{Schaltbild des Spannungsteilers zur Spannungsmessung}
+\label{fig: Spannungsteiler}
+\end{figure}
+
+Die Formel zur Berechnung von $U_{\text{ADC}}$ aus \autoref{fig: Spannungsteiler} ist in \autoref{eq: Spannung} gegeben.
+
+\begin{equation}
+\label{eq: Spannung}
+U_{\text{ADC}}=V_{\text{CC}}\cdot \frac{R_{\text{ADC}}}{1000+R_{\text{ADC}}}
+\end{equation}
+Die \autoref{tab: Widerstandswerte} zeigt die Widerstandswerte $R_{\text{ADC}}$, sowie die Spannungsabfälle $U_{\text{ADC}}$ über diese Widerstandswerte und die A/D Werte.
+
+\begin{table}[htb]
+    \centering
+    \caption{Widerstandswerte und dazugehörige Spannungen}
+    \label{tab: Widerstandswerte}
+    \begin{tabular}{ccc}
+        \toprule
+        $R_{\text{ADC}}$ [\si{\ohm}]& $U_{\text{ADC}}$  [\si{\volt}] & A/D Wert \\
+        \midrule
+        \num{100} & \num{0.3} & \num{372} \\
+        \num{150} & \num{0.43} & \num{534}\\
+        \num{220} & \num{0.60} & \num{738}\\
+		\num{680} & \num{1.34} & \num{1658}\\
+		\num{1000} & \num{1.65} & \num{2048}\\
+		\num{2200} & \num{2.27} & \num{2815}\\
+		\num{10000} & \num{3.00} & \num{3724}\\
+		\num{15000} & \num{3.09} & \num{3840}\\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \subsubsection{}
+In \autoref{eq: A/D-Wert} wird der ADC Wert berechnet, wobei $V_{\text{ref}}$  \SI{3.3}{\volt} beträgt.
 
 
+\begin{equation}
+\label{eq: ADC-Wert}
+\text{A/D}\; \text{Wert}=\big(2^{12}-1\big)\cdot \frac{U_{\text{ADC}}}{V_{\text{ref}}}
+\end{equation}
+Die berechneten Werte sind in \autoref{tab: Widerstandswerte} zu finden.
 
 \subsection{Widerstandsmessung}
+\begin{table}[htb]
+    \centering
+    \caption{Widerstandsbereiche und A/D Werte}
+    \label{tab: Widerstandsbereiche}
+    \begin{tabular}{cccc}
+        \toprule
+        $R_{\text{ADC,}\,\text{min}}$ [\si{\ohm}]& $R_{\text{ADC}\, \text{max}}$  [\si{\ohm}] & A/D Minimalwert & A/D Maximalwert\\
+        \midrule
+        \num{0} & \num{124} & \num{0} & \num{636}\\
+        \num{125} & \num{184} & \num{637} & \num{1198}\\
+        \num{185} & \num{414} & \num{1199} & \num{1853}\\
+		\num{415} & \num{826} & \num{1854} & \num{2431}\\
+		\num{827} & \num{1462} & \num{2432} & \num{3269}\\
+		\num{1463} & \num{3958} & \num{3270} & \num{3781}\\
+		\num{3959} & \num{12037} & \num{3782} & \num{3839}\\
+		\num{12038} & \num{31000} & \num{3840} & \num{4031}\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 
 \begin{lstlisting}
 /**
@@ -68,7 +128,6 @@ TimerEnable(TIMER0_BASE, TIMER_A);
 
 }
 
-
 // Es erhaelt als Eingabeparameter die Verzoegerung in ms  und eine Verzoegerung um genau diese Zeit bewirkt.
 
 void delay_ms(uint32_t waitTime) {
@@ -116,8 +175,6 @@ int main(void){
     int R5 = 2816;
     int R6 = 3724;
     int R7 = 3840;
-
-
 
    while(1)
    {
@@ -189,12 +246,6 @@ int main(void){
            GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_PIN_7*0x00);
            delay();
        }
-
    }
-
-
 }
-
-
-
 \end{lstlisting}
