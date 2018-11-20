@@ -128,11 +128,11 @@ void ADC_int_handler(void)
     }
 \end{lstlisting}
 
-
 \subsection{Eigene Verbesserungen}
+Unser Vorschlag zu einer Verbesserung des bisherigen Codes besteht daraus den Spannungspegel einer Solarzelle auf Knopfdruck zu messen und mittels der LEDs wiederzugeben. \\ 
+Um dies umzusetzen, wird zuerst die Spannung mit dem Pin PE2 gemessen und der Code von der vorherigen Teilaufgabe benutzt. Es wird eine Zener-Diode verwendet um das Board zu schützen.  Bei maximaler Beleuchtung gingen die LEDs aus. Unsere Idee war, dass die gemessene Spannung ein Overflow erzeugt, also wurde ein \SI{1}{\mega \ohm} Widerstand zwischen der Solarzelle und dem Pin eingebaut. Nach dieser Veränderung blieben die LEDs an bei maximaler beleuchtung. Bei geringer Spannung schlagen die LEDs schnell aus, also mussten die A/D Grenzen verändert werden. Nach einigen Versuchen wurde der maximale Pegel auf einen A/D-Wert von 2400000 gesetzt und für die anderen LEDs wurden in Werte in 300000 Schritten reduziert. Es wäre aber eine Energieverschwendung konstant den Spannungspegel zu messen. Deshalb wird zusätzlich ein Knopf aktiviert, welcher beim drücken den Spannungspegel wiedergibt.
 
 \begin{lstlisting}
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
@@ -267,6 +267,5 @@ void ADC_int_handler(void)
     {
         GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0| GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6| GPIO_PIN_7, 0b00000000);
     }
-    }
-
+}
 \end{lstlisting}
